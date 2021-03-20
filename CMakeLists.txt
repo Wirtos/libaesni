@@ -14,7 +14,7 @@ add_library(${PROJECT_NAME} src/intel_aes.c $<TARGET_OBJECTS:${PROJECT_NAME}_asm
 target_include_directories(${PROJECT_NAME}
         PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}
+        include
         )
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 

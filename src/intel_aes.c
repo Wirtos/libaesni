@@ -34,7 +34,7 @@
 extern "C" {
 #endif
 
-#include "include/iaesni.h"
+#include <iaesni.h>
 #include "iaes_asm_interface.h"
 
 #if (__cplusplus)
