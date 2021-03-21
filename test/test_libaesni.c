@@ -1,6 +1,7 @@
 #include <iaesni.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #ifdef __APPLE__
 #include <malloc/malloc.h>
@@ -33,6 +34,41 @@ unsigned char test_cipher_256_cbc[64]={ 0xf5,0x8c,0x4c,0x04,0xd6,0xe5,0xf1,0xba,
 										0x39,0xf2,0x33,0x69,0xa9,0xd9,0xba,0xcf,0xa5,0x30,0xe2,0x63,0x04,0x23,0x14,0x61,
 										0xb2,0xeb,0x05,0xe2,0xc3,0x9b,0xe9,0xfc,0xda,0x6c,0x19,0x07,0x8c,0x6a,0x9d,0x1b};
 
+uint8_t test_plain_text_ige[32] = {102, 210, 214, 81, 74, 18, 224, 231, 131, 174, 181, 120, 24, 28, 70, 23, 106, 119, 113,
+                                   219, 142, 11, 60, 18, 217, 57, 20, 120, 194, 37, 32, 33};
+
+uint8_t test_key_ige[32] = {16, 184, 183, 41, 152, 105, 78, 117, 121, 140, 36, 91, 165, 4, 20, 239, 82, 75, 108,
+                            14, 41, 139, 188, 190, 192,
+                            39, 241, 190, 249, 201, 93, 251};
+
+uint8_t test_init_vector_ige[32] = {83, 226, 20, 11, 79, 138, 202, 174, 7, 132, 124, 105, 118, 2, 158, 161, 3, 40,
+                                    186, 239, 165, 137, 107, 96, 197,
+                                    122, 93, 190, 8, 131, 245, 21};
+uint8_t test_result_ige[32] = {169, 151, 86, 205, 46, 244, 149, 160, 160, 65, 86, 124, 164, 80, 78, 254, 29, 89, 77, 183,
+                               125, 128, 222, 152,
+                               64, 91, 128, 211, 159, 233, 100, 30};
+
+
+void test_ige_256(){
+
+    int i;
+    uint8_t *test_cipher_256_ige = ige_256_encrypt(test_plain_text_ige, test_key_ige, test_init_vector_ige,
+                                                   sizeof(test_plain_text_ige));
+    uint8_t *decrypted = ige_256_decrypt(test_cipher_256_ige, test_key_ige, test_init_vector_ige, sizeof(test_plain_text_ige));
+    for (i = 0; i < 32; i++) {
+        if (test_result_ige[i] != test_cipher_256_ige[i]) {
+            printf("AES-IGE-256 Encryption Failed\n");
+        }
+    }
+    for (i = 0; i < 32; i++) {
+        if (decrypted[i] != test_plain_text_ige[i]) {
+            printf("AES-IGE-256 Decryption Failed\n");
+        }
+    }
+
+    printf("AES-IGE-256 Successful\n");
+
+}
 void test_cbc_256(){
 	unsigned int buffer_size = 64;
 	int nbocks = 4;
@@ -48,19 +84,19 @@ void test_cbc_256(){
 	}
 
 	memcpy(test_iv, test_init_vector, 16);
-	
+
 	printf("IV value before the call:%s\n", test_iv);
 	enc_256_CBC(testVector, testResult, test_key_256, test_iv, nbocks);
 	printf("IV value after the call: %s\n", test_iv);
-	
+
 	for (i=0;i<buffer_size;i++)
 	{
 		if (testResult[i] != test_cipher_256_cbc[i])
-		{	
+		{
 			printf("AES-CBC-256 Encryption Failed\n");
 		}
 	}
-	
+
 	memcpy(test_iv,test_init_vector,16);
 	dec_256_CBC(testResult,testVector,test_key_256, test_iv, nbocks);
 
@@ -76,7 +112,7 @@ void test_cbc_256(){
 }
 
 int main(){
-	
+
 	int AES_ENABLED = check_for_aes_instructions();
 	if (AES_ENABLED == 1){
 		printf ("The CPU supports AES-NI\n");
