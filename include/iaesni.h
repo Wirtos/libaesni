@@ -61,7 +61,6 @@ extern "C" {
 #endif
 LIBAESNI_EXPORT int check_for_aes_instructions(void);
 
-#define ROUND_KEYS_UNALIGNED_TESTING
 
 #ifdef __linux__
 
