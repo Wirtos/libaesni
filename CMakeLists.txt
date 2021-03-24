@@ -18,7 +18,7 @@ if (UNIX)
     target_compile_options(${PROJECT_NAME}_asm PRIVATE -D__linux__)
 endif ()
 
-add_library(${PROJECT_NAME} src/intel_aes.c $<TARGET_OBJECTS:${PROJECT_NAME}_asm>)
+add_library(${PROJECT_NAME} src/iaesni.c $<TARGET_OBJECTS:${PROJECT_NAME}_asm>)
 target_include_directories(${PROJECT_NAME}
         PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}

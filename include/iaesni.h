@@ -86,14 +86,14 @@ LIBAESNI_EXPORT int check_for_aes_instructions(void);
 // cipherText is pointer to buffer to be filled with encrypted (cipher text) data
 // key is pointer to enc key (sizes are 16 bytes for AES-128, 24 bytes for AES-192, 32 for AES-256)
 // numBlocks is number of 16 bytes blocks to process - note that encryption is done of full 16 byte blocks
-LIBAESNI_EXPORT void intel_AES_enc128(_AES_IN UCHAR *plainText, _AES_OUT UCHAR *cipherText, _AES_IN UCHAR *key, _AES_IN size_t numBlocks);
-LIBAESNI_EXPORT void intel_AES_enc192(_AES_IN UCHAR *plainText, _AES_OUT UCHAR *cipherText, _AES_IN UCHAR *key, _AES_IN size_t numBlocks);
-LIBAESNI_EXPORT void intel_AES_enc256(_AES_IN UCHAR *plainText, _AES_OUT UCHAR *cipherText, _AES_IN UCHAR *key, _AES_IN size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_enc128(_AES_IN const UCHAR *plainText, _AES_OUT UCHAR *cipherText, _AES_IN const UCHAR *key, _AES_IN size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_enc192(_AES_IN const UCHAR *plainText, _AES_OUT UCHAR *cipherText, _AES_IN const UCHAR *key, _AES_IN size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_enc256(_AES_IN const UCHAR *plainText, _AES_OUT UCHAR *cipherText, _AES_IN const UCHAR *key, _AES_IN size_t numBlocks);
 
 
-LIBAESNI_EXPORT void intel_AES_enc128_CBC(_AES_IN UCHAR *plainText, _AES_OUT UCHAR *cipherText, _AES_IN UCHAR *key, _AES_IN size_t numBlocks, _AES_IN UCHAR *iv);
-LIBAESNI_EXPORT void intel_AES_enc192_CBC(_AES_IN UCHAR *plainText, _AES_OUT UCHAR *cipherText, _AES_IN UCHAR *key, _AES_IN size_t numBlocks, _AES_IN UCHAR *iv);
-LIBAESNI_EXPORT void intel_AES_enc256_CBC(_AES_IN UCHAR *plainText, _AES_OUT UCHAR *cipherText, _AES_IN UCHAR *key, _AES_IN size_t numBlocks, _AES_IN UCHAR *iv);
+LIBAESNI_EXPORT void intel_AES_enc128_CBC(const UCHAR *plainText, UCHAR *cipherText, UCHAR *key, const UCHAR *iv, size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_enc192_CBC(const UCHAR *plainText, UCHAR *cipherText, UCHAR *key, const UCHAR *iv, size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_enc256_CBC(const UCHAR *plainText, UCHAR *cipherText, UCHAR *key, const UCHAR *iv, size_t numBlocks);
 
 
 // encryption functions
@@ -101,32 +101,32 @@ LIBAESNI_EXPORT void intel_AES_enc256_CBC(_AES_IN UCHAR *plainText, _AES_OUT UCH
 // plainText is pointer to buffer to be filled with original (plain text) data
 // key is pointer to enc key (sizes are 16 bytes for AES-128, 24 bytes for AES-192, 32 for AES-256)
 // numBlocks is number of 16 bytes blocks to process - note that decryption is done of full 16 byte blocks
-LIBAESNI_EXPORT void intel_AES_dec128(_AES_IN UCHAR *cipherText, _AES_OUT UCHAR *plainText, _AES_IN UCHAR *key, _AES_IN size_t numBlocks);
-LIBAESNI_EXPORT void intel_AES_dec192(_AES_IN UCHAR *cipherText, _AES_OUT UCHAR *plainText, _AES_IN UCHAR *key, _AES_IN size_t numBlocks);
-LIBAESNI_EXPORT void intel_AES_dec256(_AES_IN UCHAR *cipherText, _AES_OUT UCHAR *plainText, _AES_IN UCHAR *key, _AES_IN size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_dec128(_AES_IN const UCHAR *cipherText, _AES_OUT UCHAR *plainText, _AES_IN const UCHAR *key, _AES_IN size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_dec192(_AES_IN const UCHAR *cipherText, _AES_OUT UCHAR *plainText, _AES_IN const UCHAR *key, _AES_IN size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_dec256(_AES_IN const UCHAR *cipherText, _AES_OUT UCHAR *plainText, _AES_IN const UCHAR *key, _AES_IN size_t numBlocks);
 
-LIBAESNI_EXPORT void intel_AES_dec128_CBC(_AES_IN UCHAR *cipherText, _AES_OUT UCHAR *plainText, _AES_IN UCHAR *key, _AES_IN size_t numBlocks, _AES_IN UCHAR *iv);
-LIBAESNI_EXPORT void intel_AES_dec192_CBC(_AES_IN UCHAR *cipherText, _AES_OUT UCHAR *plainText, _AES_IN UCHAR *key, _AES_IN size_t numBlocks, _AES_IN UCHAR *iv);
-LIBAESNI_EXPORT void intel_AES_dec256_CBC(_AES_IN UCHAR *cipherText, _AES_OUT UCHAR *plainText, _AES_IN UCHAR *key, _AES_IN size_t numBlocks, _AES_IN UCHAR *iv);
+LIBAESNI_EXPORT void intel_AES_dec128_CBC(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, const UCHAR *iv, size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_dec192_CBC(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, const UCHAR *iv, size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_dec256_CBC(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, const UCHAR *iv, size_t numBlocks);
 
-LIBAESNI_EXPORT void intel_AES_encdec128_CTR(_AES_IN UCHAR *input, _AES_OUT UCHAR *output, _AES_IN UCHAR *key, _AES_IN size_t numBlocks, _AES_IN UCHAR *initial_counter);
-LIBAESNI_EXPORT void intel_AES_encdec192_CTR(_AES_IN UCHAR *input, _AES_OUT UCHAR *output, _AES_IN UCHAR *key, _AES_IN size_t numBlocks, _AES_IN UCHAR *initial_counter);
-LIBAESNI_EXPORT void intel_AES_encdec256_CTR(_AES_IN UCHAR *input, _AES_OUT UCHAR *output, _AES_IN UCHAR *key, _AES_IN size_t numBlocks, _AES_IN UCHAR *initial_counter);
+LIBAESNI_EXPORT void intel_AES_encdec128_CTR(const UCHAR *input, UCHAR *output, const UCHAR *key, const UCHAR *initial_counter, size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_encdec192_CTR(const UCHAR *input, UCHAR *output, const UCHAR *key, const UCHAR *initial_counter, size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_encdec256_CTR(const UCHAR *input, UCHAR *output, const UCHAR *key, const UCHAR *initial_counter, size_t numBlocks);
 
 
 // Encryption/Decryption Functions
-LIBAESNI_EXPORT int enc_128_CBC(unsigned char *pt, unsigned char *ct, unsigned char *key, unsigned char *iv, int numBlocks);
-LIBAESNI_EXPORT int dec_128_CBC(unsigned char *ct, unsigned char *pt, unsigned char *key, unsigned char *iv, int numBlocks);
-LIBAESNI_EXPORT int enc_192_CBC(unsigned char *pt, unsigned char *ct, unsigned char *key, unsigned char *iv, int numBlocks);
-LIBAESNI_EXPORT int dec_192_CBC(unsigned char *ct, unsigned char *pt, unsigned char *key, unsigned char *iv, int numBlocks);
-LIBAESNI_EXPORT int enc_256_CBC(unsigned char *pt, unsigned char *ct, unsigned char *key, unsigned char *iv, int numBlocks);
-LIBAESNI_EXPORT int dec_256_CBC(unsigned char *ct, unsigned char *pt, unsigned char *key, unsigned char *iv, int numBlocks);
-LIBAESNI_EXPORT int enc_128_CTR(unsigned char *pt, unsigned char *ct, unsigned char *key, unsigned char *ic, int numBlocks);
-LIBAESNI_EXPORT int dec_128_CTR(unsigned char *ct, unsigned char *pt, unsigned char *key, unsigned char *ic, int numBlocks);
-LIBAESNI_EXPORT int enc_192_CTR(unsigned char *pt, unsigned char *ct, unsigned char *key, unsigned char *ic, int numBlocks);
-LIBAESNI_EXPORT int dec_192_CTR(unsigned char *ct, unsigned char *pt, unsigned char *key, unsigned char *ic, int numBlocks);
-LIBAESNI_EXPORT int enc_256_CTR(unsigned char *pt, unsigned char *ct, unsigned char *key, unsigned char *ic, int numBlocks);
-LIBAESNI_EXPORT int dec_256_CTR(unsigned char *ct, unsigned char *pt, unsigned char *key, unsigned char *ic, int numBlocks);
+LIBAESNI_EXPORT int enc_128_CBC(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *iv, int numBlocks);
+LIBAESNI_EXPORT int dec_128_CBC(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *iv, int numBlocks);
+LIBAESNI_EXPORT int enc_192_CBC(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *iv, int numBlocks);
+LIBAESNI_EXPORT int dec_192_CBC(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *iv, int numBlocks);
+LIBAESNI_EXPORT int enc_256_CBC(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *iv, int numBlocks);
+LIBAESNI_EXPORT int dec_256_CBC(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *iv, int numBlocks);
+LIBAESNI_EXPORT int enc_128_CTR(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *ic, int numBlocks);
+LIBAESNI_EXPORT int dec_128_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *ic, int numBlocks);
+LIBAESNI_EXPORT int enc_192_CTR(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *ic, int numBlocks);
+LIBAESNI_EXPORT int dec_192_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *ic, int numBlocks);
+LIBAESNI_EXPORT int enc_256_CTR(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *ic, int numBlocks);
+LIBAESNI_EXPORT int dec_256_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *ic, int numBlocks);
 
 
 #ifdef __cplusplus

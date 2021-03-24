@@ -34,11 +34,11 @@
 
 //structure to pass aes processing data to asm level functions
 typedef struct sAesData_ {
-	_AES_IN		UCHAR	*in_block;
-	_AES_OUT	UCHAR	*out_block;
-	_AES_IN		UCHAR	*expanded_key;		
-	_AES_INOUT	UCHAR	*iv;					// for CBC mode
-	_AES_IN		size_t	num_blocks;
+	_AES_IN		const UCHAR	*in_block;
+	_AES_OUT	      UCHAR	*out_block;
+	_AES_IN		const UCHAR	*expanded_key;
+	_AES_INOUT  const UCHAR	*iv;					// for CBC mode
+	_AES_IN		     size_t num_blocks;
 } sAesData;
 
 #ifdef __cplusplus
@@ -79,13 +79,13 @@ extern "C" {
 	// prepearing the different key rounds, for enc/dec in asm
 	// expnaded key should be 16-byte aligned
 	// expanded key should have enough space to hold all key rounds (16 bytes per round) - 256 bytes would cover all cases (AES256 has 14 rounds + 1 xor)
-	void MYSTDCALL iEncExpandKey256(_AES_IN UCHAR *key, _AES_OUT UCHAR *expanded_key);
-	void MYSTDCALL iEncExpandKey192(_AES_IN UCHAR *key, _AES_OUT UCHAR *expanded_key);
-	void MYSTDCALL iEncExpandKey128(_AES_IN UCHAR *key, _AES_OUT UCHAR *expanded_key);
+	void MYSTDCALL iEncExpandKey256(_AES_IN const UCHAR *key, _AES_OUT UCHAR *expanded_key);
+	void MYSTDCALL iEncExpandKey192(_AES_IN const UCHAR *key, _AES_OUT UCHAR *expanded_key);
+	void MYSTDCALL iEncExpandKey128(_AES_IN const UCHAR *key, _AES_OUT UCHAR *expanded_key);
 
-	void MYSTDCALL iDecExpandKey256(UCHAR *key, _AES_OUT UCHAR *expanded_key);
-	void MYSTDCALL iDecExpandKey192(UCHAR *key, _AES_OUT UCHAR *expanded_key);
-	void MYSTDCALL iDecExpandKey128(UCHAR *key, _AES_OUT UCHAR *expanded_key);
+	void MYSTDCALL iDecExpandKey256(const UCHAR *key, _AES_OUT UCHAR *expanded_key);
+	void MYSTDCALL iDecExpandKey192(const UCHAR *key, _AES_OUT UCHAR *expanded_key);
+	void MYSTDCALL iDecExpandKey128(const UCHAR *key, _AES_OUT UCHAR *expanded_key);
 
 
 	//enc/dec asm functions
