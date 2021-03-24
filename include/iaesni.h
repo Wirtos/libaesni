@@ -153,8 +153,8 @@ LIBAESNI_EXPORT int enc_192_CTR(unsigned char *pt, unsigned char *ct, unsigned c
 LIBAESNI_EXPORT int dec_192_CTR(unsigned char *ct, unsigned char *pt, unsigned char *key, unsigned char *ic, int numBlocks);
 LIBAESNI_EXPORT int enc_256_CTR(unsigned char *pt, unsigned char *ct, unsigned char *key, unsigned char *ic, int numBlocks);
 LIBAESNI_EXPORT int dec_256_CTR(unsigned char *ct, unsigned char *pt, unsigned char *key, unsigned char *ic, int numBlocks);
-LIBAESNI_EXPORT uint8_t *enc_256_IGE(unsigned char *pt, unsigned char *key, unsigned char *iv,int sizeOfPt);
-LIBAESNI_EXPORT uint8_t *dec_256_IGE(unsigned char *ct, unsigned char *key, unsigned char *iv,int sizeOfCt);
+LIBAESNI_EXPORT int enc_256_IGE(unsigned char *pt, unsigned char *key, unsigned char *iv,int sizeOfPt);
+LIBAESNI_EXPORT int dec_256_IGE(unsigned char *ct, unsigned char *key, unsigned char *iv,int sizeOfCt);
 
 
 #if (__cplusplus)

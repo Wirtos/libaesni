@@ -323,7 +323,7 @@ int enc_128_CBC(unsigned char *pt, unsigned char *ct, unsigned char *key, unsign
 
     UCHAR _key[AES_128_KEYSIZE];
     UCHAR _iv[BLOCK_SIZE];
-    UCHAR * plaintext = (UCHAR *) _alloca(buffer_size);
+    UCHAR *plaintext = (UCHAR *) _alloca(buffer_size);
 
     for (i = 0; i < BLOCK_SIZE; i++) {
         _key[i] = key[i];
@@ -346,7 +346,7 @@ int dec_128_CBC(unsigned char *ct, unsigned char *pt, unsigned char *key, unsign
 
     UCHAR _key[AES_128_KEYSIZE];
     UCHAR _iv[BLOCK_SIZE];
-    UCHAR * ciphertext = (UCHAR *) _alloca(buffer_size);
+    UCHAR *ciphertext = (UCHAR *) _alloca(buffer_size);
 
     for (i = 0; i < BLOCK_SIZE; i++) {
         _key[i] = key[i];
@@ -368,7 +368,7 @@ int enc_192_CBC(unsigned char *pt, unsigned char *ct, unsigned char *key, unsign
 
     UCHAR _key[AES_192_KEYSIZE];
     UCHAR _iv[BLOCK_SIZE];
-    UCHAR * plaintext = (UCHAR *) _alloca(buffer_size);
+    UCHAR *plaintext = (UCHAR *) _alloca(buffer_size);
 
     for (i = 0; i < BLOCK_SIZE; i++) {
         _iv[i] = iv[i];
@@ -395,7 +395,7 @@ int dec_192_CBC(unsigned char *ct, unsigned char *pt, unsigned char *key, unsign
 
     UCHAR _key[AES_192_KEYSIZE];
     UCHAR _iv[BLOCK_SIZE];
-    UCHAR * ciphertext = (UCHAR *) _alloca(buffer_size);
+    UCHAR *ciphertext = (UCHAR *) _alloca(buffer_size);
 
     for (i = 0; i < BLOCK_SIZE; i++) {
         _iv[i] = iv[i];
@@ -420,7 +420,7 @@ int enc_256_CBC(unsigned char *pt, unsigned char *ct, unsigned char *key, unsign
 
     UCHAR _key[AES_256_KEYSIZE];
     UCHAR _iv[BLOCK_SIZE];
-    UCHAR * plaintext = (UCHAR *) _alloca(buffer_size);
+    UCHAR *plaintext = (UCHAR *) _alloca(buffer_size);
 
     for (i = 0; i < BLOCK_SIZE; i++) {
         _iv[i] = iv[i];
@@ -446,7 +446,7 @@ int dec_256_CBC(unsigned char *ct, unsigned char *pt, unsigned char *key, unsign
 
     UCHAR _key[AES_256_KEYSIZE];
     UCHAR _iv[BLOCK_SIZE];
-    UCHAR * ciphertext = (UCHAR *) _alloca(buffer_size);
+    UCHAR *ciphertext = (UCHAR *) _alloca(buffer_size);
 
     for (i = 0; i < BLOCK_SIZE; i++) {
         _iv[i] = iv[i];
@@ -470,7 +470,7 @@ int enc_128_CTR(unsigned char *pt, unsigned char *ct, unsigned char *key, unsign
 
     UCHAR _key[AES_128_KEYSIZE];
     UCHAR _ic[BLOCK_SIZE];
-    UCHAR * plaintext = (UCHAR *) _alloca(buffer_size);
+    UCHAR *plaintext = (UCHAR *) _alloca(buffer_size);
 
     for (i = 0; i < BLOCK_SIZE; i++) {
         _key[i] = key[i];
@@ -492,7 +492,7 @@ int dec_128_CTR(unsigned char *ct, unsigned char *pt, unsigned char *key, unsign
 
     UCHAR _key[AES_128_KEYSIZE];
     UCHAR _ic[BLOCK_SIZE];
-    UCHAR * ciphertext = (UCHAR *) _alloca(buffer_size);
+    UCHAR *ciphertext = (UCHAR *) _alloca(buffer_size);
 
     for (i = 0; i < BLOCK_SIZE; i++) {
         _key[i] = key[i];
@@ -514,7 +514,7 @@ int enc_192_CTR(unsigned char *pt, unsigned char *ct, unsigned char *key, unsign
 
     UCHAR _key[AES_192_KEYSIZE];
     UCHAR _ic[BLOCK_SIZE];
-    UCHAR * plaintext = (UCHAR *) _alloca(buffer_size);
+    UCHAR *plaintext = (UCHAR *) _alloca(buffer_size);
 
     for (i = 0; i < BLOCK_SIZE; i++) {
         _ic[i] = ic[i];
@@ -539,7 +539,7 @@ int dec_192_CTR(unsigned char *ct, unsigned char *pt, unsigned char *key, unsign
 
     UCHAR _key[AES_192_KEYSIZE];
     UCHAR _ic[BLOCK_SIZE];
-    UCHAR * ciphertext = (UCHAR *) _alloca(buffer_size);
+    UCHAR *ciphertext = (UCHAR *) _alloca(buffer_size);
 
     for (i = 0; i < BLOCK_SIZE; i++) {
         _key[i] = key[i];
@@ -566,7 +566,7 @@ int enc_256_CTR(unsigned char *pt, unsigned char *ct, unsigned char *key, unsign
 
     UCHAR _key[AES_256_KEYSIZE];
     UCHAR _ic[BLOCK_SIZE];
-    UCHAR * plaintext = (UCHAR *) _alloca(buffer_size);
+    UCHAR *plaintext = (UCHAR *) _alloca(buffer_size);
 
     for (i = 0; i < BLOCK_SIZE; i++) {
         _ic[i] = ic[i];
@@ -591,7 +591,7 @@ int dec_256_CTR(unsigned char *ct, unsigned char *pt, unsigned char *key, unsign
 
     UCHAR _key[AES_256_KEYSIZE];
     UCHAR _ic[BLOCK_SIZE];
-    UCHAR * ciphertext = (UCHAR *) _alloca(buffer_size);
+    UCHAR *ciphertext = (UCHAR *) _alloca(buffer_size);
 
     for (i = 0; i < BLOCK_SIZE; i++) {
         _ic[i] = ic[i];
@@ -611,7 +611,7 @@ int dec_256_CTR(unsigned char *ct, unsigned char *pt, unsigned char *key, unsign
 }
 
 // There might be room for more performance optimizations
-uint8_t *enc_256_IGE(uint8_t *plainText, uint8_t *key, uint8_t *iv, int text_length) {
+int enc_256_IGE(uint8_t *plainText, uint8_t *key, uint8_t *iv, int text_length) {
     uint8_t iv1[16];
     uint8_t iv2[16];
     uint8_t cipherTextBlock[16];
@@ -647,19 +647,24 @@ uint8_t *enc_256_IGE(uint8_t *plainText, uint8_t *key, uint8_t *iv, int text_len
             cipherText[blockIndex * 16 + j] = cipherTextBlock[j];
         }
     }
-    return cipherText;
+    for (int j = 0; j < text_length; j++) {
+        plainText[j] = cipherText[j];
+    }
+
+    return 0;
 }
 
-uint8_t *dec_256_IGE(const uint8_t *cipherText, uint8_t *key, uint8_t *iv, int text_length) {
+int dec_256_IGE(const uint8_t *cipherText, uint8_t *key, uint8_t *iv, int text_length) {
     uint8_t iv1[16];
     uint8_t iv2[16];
     uint8_t cipherTextBlock[16];
     uint8_t plainTextBlock[16];
-    uint8_t *plainText = (uint8_t *) malloc(text_length * sizeof(uint8_t));
     int blockIndex;
     // create iv1 and iv2
     memcpy(iv1, iv, 16 * sizeof(uint8_t));
     memcpy(iv2, iv + 16, 16 * sizeof(uint8_t));
+    uint8_t *plainText = (uint8_t *) malloc(text_length * sizeof(uint8_t));
+
     int blocksCount = text_length / 16;
 
     for (blockIndex = 0; blockIndex < blocksCount; blockIndex++) {
@@ -682,5 +687,9 @@ uint8_t *dec_256_IGE(const uint8_t *cipherText, uint8_t *key, uint8_t *iv, int t
             plainText[blockIndex * 16 + j] = plainTextBlock[j];
         }
     }
-    return plainText;
+    for (int j = 0; j < text_length; j++) {
+        cipherText[j] = plainText[j];
+    }
+
+    return 0;
 }

@@ -4,12 +4,12 @@ project(libaesni LANGUAGES C ASM_NASM)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 add_library(${PROJECT_NAME}_asm OBJECT asm/iaesx64.s asm/do_rdtsc.s)
 if (NOT ${CMAKE_C_COMPILER_ID} MATCHES "MSVC")
     target_compile_options(${PROJECT_NAME}_asm PRIVATE -D__linux__)
 endif ()
-
 add_library(${PROJECT_NAME} src/intel_aes.c $<TARGET_OBJECTS:${PROJECT_NAME}_asm>)
 target_include_directories(${PROJECT_NAME}
         PUBLIC

@@ -52,9 +52,12 @@ uint8_t test_result_ige[32] = {169, 151, 86, 205, 46, 244, 149, 160, 160, 65, 86
 void test_ige_256(){
 
     int i;
-    uint8_t *test_cipher_256_ige = ige_256_encrypt(test_plain_text_ige, test_key_ige, test_init_vector_ige,
-                                                   sizeof(test_plain_text_ige));
-    uint8_t *decrypted = ige_256_decrypt(test_cipher_256_ige, test_key_ige, test_init_vector_ige, sizeof(test_plain_text_ige));
+    uint8_t test_cipher_256_ige[32];
+    enc_256_IGE(test_plain_text_ige, test_cipher_256_ige, test_key_ige, test_init_vector_ige,
+                sizeof(test_plain_text_ige));
+    uint8_t decrypted[32];
+    dec_256_IGE(test_cipher_256_ige, decrypted, test_key_ige, test_init_vector_ige,
+                sizeof(test_plain_text_ige));
     for (i = 0; i < 32; i++) {
         if (test_result_ige[i] != test_cipher_256_ige[i]) {
             printf("AES-IGE-256 Encryption Failed\n");
