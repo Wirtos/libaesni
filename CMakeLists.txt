@@ -29,6 +29,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 include(GenerateExportHeader)
 generate_export_header(${PROJECT_NAME})
 
-
-add_executable(test EXCLUDE_FROM_ALL test/test_libaesni.c)
-target_link_libraries(test PRIVATE ${PROJECT_NAME})
+if (LIBAESNI_ENABLE_TESTS)
+    add_executable(test EXCLUDE_FROM_ALL test/test_libaesni.c)
+    target_link_libraries(test PRIVATE ${PROJECT_NAME})
+endif ()

@@ -1,20 +1,7 @@
 #include <iaesni.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#ifdef __APPLE__
-#include <malloc/malloc.h>
-#else
-#include <malloc.h>
-#endif
-
-#include <memory.h>
-#ifndef _WIN32
-#include <alloca.h>
-#ifndef _alloca
-#define _alloca alloca
-#endif
-#endif
+#include <string.h>
 
 // Test vectors based on NIST Recommendation for Block Cipher Modes of Operation 
 // http://csrc.nist.gov/publications/nistpubs/800-38a/sp800-38a.pdf
@@ -33,12 +20,19 @@ unsigned char test_cipher_256_cbc[64]={ 0xf5,0x8c,0x4c,0x04,0xd6,0xe5,0xf1,0xba,
 										0x39,0xf2,0x33,0x69,0xa9,0xd9,0xba,0xcf,0xa5,0x30,0xe2,0x63,0x04,0x23,0x14,0x61,
 										0xb2,0xeb,0x05,0xe2,0xc3,0x9b,0xe9,0xfc,0xda,0x6c,0x19,0x07,0x8c,0x6a,0x9d,0x1b};
 
+void printhex(const unsigned char *s, size_t size){
+    for (const unsigned char *end = s + size; s < end; s++) {
+        printf("%x", *s);
+    }
+    putchar('\n');
+}
+
 void test_cbc_256(){
 	unsigned int buffer_size = 64;
 	int nbocks = 4;
 	unsigned int i;
-	unsigned char *testVector = (unsigned char*)_alloca(buffer_size);
-	unsigned char *testResult = (unsigned char*)_alloca(buffer_size);
+	unsigned char *testVector = malloc(buffer_size);
+	unsigned char *testResult = malloc(buffer_size);
 	unsigned char test_iv[16];
 
 	for (i=0;i<buffer_size;i++)
@@ -49,9 +43,11 @@ void test_cbc_256(){
 
 	memcpy(test_iv, test_init_vector, 16);
 	
-	printf("IV value before the call:%s\n", test_iv);
+	printf("IV value before the call: ");
+    printhex(test_iv, sizeof(test_iv));
 	enc_256_CBC(testVector, testResult, test_key_256, test_iv, nbocks);
-	printf("IV value after the call: %s\n", test_iv);
+	printf("IV value after the call: ");
+    printhex(test_iv, sizeof(test_iv));
 	
 	for (i=0;i<buffer_size;i++)
 	{
@@ -73,17 +69,19 @@ void test_cbc_256(){
 	}
 
 	printf("AES-CBC-256 Successful\n");
+    free(testVector);
+    free(testResult);
 }
 
 int main(){
-	
 	int AES_ENABLED = check_for_aes_instructions();
 	if (AES_ENABLED == 1){
 		printf ("The CPU supports AES-NI\n");
 		test_cbc_256();
+        return EXIT_SUCCESS;
 	}
 	else{
 		printf ("The CPU seems to not support AES-NI\n");
-		return -1;
+		return EXIT_FAILURE;
 	}
 }
