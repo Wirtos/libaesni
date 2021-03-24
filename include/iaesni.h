@@ -91,9 +91,9 @@ LIBAESNI_EXPORT void intel_AES_enc192(_AES_IN const UCHAR *plainText, _AES_OUT U
 LIBAESNI_EXPORT void intel_AES_enc256(_AES_IN const UCHAR *plainText, _AES_OUT UCHAR *cipherText, _AES_IN const UCHAR *key, _AES_IN size_t numBlocks);
 
 
-LIBAESNI_EXPORT void intel_AES_enc128_CBC(const UCHAR *plainText, UCHAR *cipherText, UCHAR *key, const UCHAR *iv, size_t numBlocks);
-LIBAESNI_EXPORT void intel_AES_enc192_CBC(const UCHAR *plainText, UCHAR *cipherText, UCHAR *key, const UCHAR *iv, size_t numBlocks);
-LIBAESNI_EXPORT void intel_AES_enc256_CBC(const UCHAR *plainText, UCHAR *cipherText, UCHAR *key, const UCHAR *iv, size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_enc128_CBC(const UCHAR *plainText, UCHAR *cipherText, const UCHAR *key, const UCHAR *iv, size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_enc192_CBC(const UCHAR *plainText, UCHAR *cipherText, const UCHAR *key, const UCHAR *iv, size_t numBlocks);
+LIBAESNI_EXPORT void intel_AES_enc256_CBC(const UCHAR *plainText, UCHAR *cipherText, const UCHAR *key, const UCHAR *iv, size_t numBlocks);
 
 
 // encryption functions

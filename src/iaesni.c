@@ -277,7 +277,7 @@ void intel_AES_encdec256_CTR(const UCHAR *input, UCHAR *output, const UCHAR *key
 	iEnc256_CTR(&aesData);
 }
 
-void intel_AES_encdec192_CTR(const UCHAR *input, UCHAR *output, UCHAR *key, const UCHAR *initial_counter, size_t numBlocks) {
+void intel_AES_encdec192_CTR(const UCHAR *input, UCHAR *output, const UCHAR *key, const UCHAR *initial_counter, size_t numBlocks) {
 	DEFINE_ROUND_KEYS
 	sAesData aesData;
 	aesData.in_block = input;
@@ -290,7 +290,7 @@ void intel_AES_encdec192_CTR(const UCHAR *input, UCHAR *output, UCHAR *key, cons
 	iEnc192_CTR(&aesData);
 }
 
-void intel_AES_encdec128_CTR(const UCHAR *input, UCHAR *output, UCHAR *key, const UCHAR *initial_counter, size_t numBlocks) {
+void intel_AES_encdec128_CTR(const UCHAR *input, UCHAR *output, const UCHAR *key, const UCHAR *initial_counter, size_t numBlocks) {
 	DEFINE_ROUND_KEYS
 	sAesData aesData;
 	aesData.in_block = input;
