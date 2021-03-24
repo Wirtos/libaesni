@@ -29,48 +29,23 @@
 
 // 2016, Amirali Sanatinia (amirali@ccs.neu.edu)
 
-
-#if (__cplusplus)
-extern "C" {
-#endif
-
+#include <string.h>
 #include <iaesni.h>
 #include "iaes_asm_interface.h"
 
-#if (__cplusplus)
-}
-#endif
-
-#include <stdio.h>
-#include <string.h>
-
-
 #ifdef _WIN32
-#include <intrin.h>
+    #include <intrin.h> /* __cpuid */
 #else
-
-static void __cpuid(unsigned int where[4], unsigned int leaf) {
-  asm volatile("cpuid":"=a"(*where),"=b"(*(where+1)), "=c"(*(where+2)),"=d"(*(where+3)):"a"(leaf));
-  return;
-}
+    #include <cpuid.h>
 #endif
 
-
-#include <stdlib.h>
-
-#ifdef __APPLE__
-#include <malloc/malloc.h>
+#if defined(_WIN32)
+    #include <malloc.h>
 #else
-#include <malloc.h>
-#endif
-
-#include <memory.h>
-
-#ifndef _WIN32
-#include <alloca.h>
-#ifndef _alloca
-#define _alloca alloca
-#endif
+    #include <alloca.h>
+    #ifndef _alloca
+        #define _alloca alloca
+    #endif
 #endif
 
 #define BLOCK_SIZE (16) //in bytes
@@ -78,39 +53,55 @@ static void __cpuid(unsigned int where[4], unsigned int leaf) {
 #define AES_192_KEYSIZE (24) //in bytes
 #define AES_256_KEYSIZE (32) //in bytes
 
+#define AES_INSTRCTIONS_CPUID_BIT (1<<25)
+
+static void iaesni_cpuid(unsigned int res[4], int leaf){
+#ifdef _WIN32
+    __cpuid(res, leaf);
+#else
+    __cpuid(leaf, res[0], res[1], res[2], res[3]);
+#endif
+}
 
 /* 
  * check_for_aes_instructions()
- *   return 1 if support AES-NI and 0 if don't support AES-NI
+ *   return 1 if cpu supports AES-NI, 0 otherwise
  */
 
-int check_for_aes_instructions()
-{
-	unsigned int cpuid_results[4];
-	int yes=1, no=0;
+int check_for_aes_instructions() {/*eax|ebx|ecx|edx*/
+    unsigned int cpuid_results[4] = {0, 0, 0, 0};
+    /* leaf 0 returns vendor string */
+    iaesni_cpuid(cpuid_results, 0);
+    /*
+     *      MSB         LSB
+     * EBX = 'u' 'n' 'e' 'G'
+     * EDX = 'I' 'e' 'n' 'i'
+     * ECX = 'l' 'e' 't' 'n'
+     */
 
-	__cpuid(cpuid_results,0);
+    /* swap 2 and 3 register values to make them appear as EBX EDX ECX */
+    {
+        unsigned temp = cpuid_results[2];
+        cpuid_results[2] = cpuid_results[3];
+        cpuid_results[3] = temp;
+    }
 
-	if (cpuid_results[0] < 1)
-		return no;
-/*
- *      MSB         LSB
- * EBX = 'u' 'n' 'e' 'G'
- * EDX = 'I' 'e' 'n' 'i'
- * ECX = 'l' 'e' 't' 'n'
- */
-	
-	if (memcmp((unsigned char *)&cpuid_results[1], "Genu", 4) != 0 ||
-		memcmp((unsigned char *)&cpuid_results[3], "ineI", 4) != 0 ||
-		memcmp((unsigned char *)&cpuid_results[2], "ntel", 4) != 0)
-		return no;
+    if (cpuid_results[0] < 1) {
+        return 0;
+    }
+    /* check cpu vendor */
+    if (memcmp(&cpuid_results[1], "GenuineIntel", sizeof(*cpuid_results) * 3) != 0 && memcmp(&cpuid_results[1], "AuthenticAMD", sizeof(*cpuid_results) * 3) != 0) {
+        return 0;
+    }
 
-	__cpuid(cpuid_results,1);
+    /* leaf 1 returns cpu info, ecx contains feature flag we're interested in */
+    iaesni_cpuid(cpuid_results, 1);
 
-	if (cpuid_results[2] & AES_INSTRCTIONS_CPUID_BIT)
-		return yes;
+    if (cpuid_results[2] & AES_INSTRCTIONS_CPUID_BIT) {
+        return 1;
+    }
 
-	return no;
+	return 0;
 }
 
 void intel_AES_enc128(UCHAR *plainText,UCHAR *cipherText,UCHAR *key,size_t numBlocks)

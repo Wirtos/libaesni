@@ -36,10 +36,8 @@
 #include <stdlib.h>
 #include <libaesni_export.h>
 
-#define AES_INSTRCTIONS_CPUID_BIT (1<<25)
-
 //indicates input param
-#define _AES_IN	
+#define _AES_IN
 
 //indicates output param
 #define _AES_OUT
@@ -49,60 +47,38 @@
 
 typedef unsigned char UCHAR;
 
-
-#ifndef bool
-#define bool BOOL
+#ifdef __cplusplus
+extern "C" {
 #endif
+
+#if defined(_MSC_VER)
+    #ifdef ROUND_KEYS_UNALIGNED_TESTING
+        #define DEFINE_ROUND_KEYS                              \
+            __declspec(align(16)) UCHAR _expandedKey[16 * 16]; \
+            UCHAR *expandedKey = _expandedKey + 4;
+    #else
+        #define DEFINE_ROUND_KEYS                              \
+            __declspec(align(16)) UCHAR _expandedKey[16 * 16]; \
+            UCHAR *expandedKey = _expandedKey;
+    #endif
+#elif defined(__GNUC__) || defined(__clang__) || (defined(__has_attribute) && __has_attribute(aligned))
+    #ifdef ROUND_KEYS_UNALIGNED_TESTING
+        #define DEFINE_ROUND_KEYS                                     \
+            UCHAR __attribute__((aligned(16))) _expandedKey[16 * 16]; \
+            UCHAR *expandedKey = _expandedKey + 4;
+    #else
+        #define DEFINE_ROUND_KEYS                                     \
+            UCHAR __attribute__((aligned(16))) _expandedKey[16 * 16]; \
+            UCHAR *expandedKey = _expandedKey;
+    #endif
+#else
+    #error "Can't find any align extension"
+#endif
+
 //test if the processor actually supports the above functions
 //executing one the functions below without processor support will cause UD fault
 //bool check_for_aes_instructions(void);
-#if (__cplusplus)
-extern "C" {
-#endif
 LIBAESNI_EXPORT int check_for_aes_instructions(void);
-
-
-#ifdef __linux__
-
-#ifdef ROUND_KEYS_UNALIGNED_TESTING
-
-#define DEFINE_ROUND_KEYS \
-	UCHAR __attribute__ ((aligned (16))) _expandedKey[16*16];	\
-	UCHAR *expandedKey = _expandedKey + 4;	\
-
-
-#else
-
-
-
-#define DEFINE_ROUND_KEYS \
-	UCHAR __attribute__ ((aligned (16))) _expandedKey[16*16];	\
-	UCHAR *expandedKey = _expandedKey;	\
-
-#endif
-
-#else // if not __linux__
-
-#ifdef ROUND_KEYS_UNALIGNED_TESTING
-
-#define DEFINE_ROUND_KEYS \
-	__declspec(align(16)) UCHAR _expandedKey[16*16];	\
-	UCHAR *expandedKey = _expandedKey + 4;	\
-
-
-#else
-
-
-
-#define DEFINE_ROUND_KEYS \
-	__declspec(align(16)) UCHAR _expandedKey[16*16];	\
-	UCHAR *expandedKey = _expandedKey;	\
-
-
-#endif
-
-#endif
-
 
 
 // encryption functions
@@ -153,7 +129,7 @@ LIBAESNI_EXPORT int enc_256_CTR(unsigned char *pt, unsigned char *ct, unsigned c
 LIBAESNI_EXPORT int dec_256_CTR(unsigned char *ct, unsigned char *pt, unsigned char *key, unsigned char *ic, int numBlocks);
 
 
-#if (__cplusplus)
+#ifdef __cplusplus
 }
 #endif
 

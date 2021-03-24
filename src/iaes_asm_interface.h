@@ -33,8 +33,7 @@
 #define _INTEL_AES_ASM_INTERFACE_H__
 
 //structure to pass aes processing data to asm level functions
-typedef struct _sAesData
-{
+typedef struct sAesData_ {
 	_AES_IN		UCHAR	*in_block;
 	_AES_OUT	UCHAR	*out_block;
 	_AES_IN		UCHAR	*expanded_key;		
@@ -42,40 +41,40 @@ typedef struct _sAesData
 	_AES_IN		size_t	num_blocks;
 } sAesData;
 
-#if (__cplusplus)
-extern "C"
-{
+#ifdef __cplusplus
+extern "C" {
 #endif
+
 #if 0
-#define MYSTDCALL __stdcall
+    #define MYSTDCALL __stdcall
 #else
-#define MYSTDCALL 
+    #define MYSTDCALL
 #endif
 
-
+/* on apple it expects symbols to already have underscores */
 #ifndef __APPLE__
-#define iEncExpandKey256 _iEncExpandKey256
-#define iEncExpandKey192 _iEncExpandKey192
-#define iEncExpandKey128 _iEncExpandKey128
-#define iDecExpandKey256 _iDecExpandKey256
-#define iDecExpandKey192 _iDecExpandKey192
-#define iDecExpandKey128 _iDecExpandKey128
-#define iEnc128 _iEnc128
-#define iDec128 _iDec128
-#define iEnc256 _iEnc256
-#define iDec256 _iDec256
-#define iEnc192 _iEnc192
-#define iDec192 _iDec192
-#define iEnc128_CBC _iEnc128_CBC
-#define iDec128_CBC _iDec128_CBC
-#define iEnc256_CBC _iEnc256_CBC
-#define iDec256_CBC _iDec256_CBC
-#define iEnc192_CBC _iEnc192_CBC
-#define iDec192_CBC _iDec192_CBC
-#define iEnc128_CTR _iEnc128_CTR
-#define iEnc192_CTR _iEnc192_CTR
-#define iEnc256_CTR _iEnc256_CTR
-#define do_rdtsc    _do_rdtsc
+    #define iEncExpandKey256 _iEncExpandKey256
+    #define iEncExpandKey192 _iEncExpandKey192
+    #define iEncExpandKey128 _iEncExpandKey128
+    #define iDecExpandKey256 _iDecExpandKey256
+    #define iDecExpandKey192 _iDecExpandKey192
+    #define iDecExpandKey128 _iDecExpandKey128
+    #define iEnc128 _iEnc128
+    #define iDec128 _iDec128
+    #define iEnc256 _iEnc256
+    #define iDec256 _iDec256
+    #define iEnc192 _iEnc192
+    #define iDec192 _iDec192
+    #define iEnc128_CBC _iEnc128_CBC
+    #define iDec128_CBC _iDec128_CBC
+    #define iEnc256_CBC _iEnc256_CBC
+    #define iDec256_CBC _iDec256_CBC
+    #define iEnc192_CBC _iEnc192_CBC
+    #define iDec192_CBC _iDec192_CBC
+    #define iEnc128_CTR _iEnc128_CTR
+    #define iEnc192_CTR _iEnc192_CTR
+    #define iEnc256_CTR _iEnc256_CTR
+    #define do_rdtsc    _do_rdtsc
 #endif
 	// prepearing the different key rounds, for enc/dec in asm
 	// expnaded key should be 16-byte aligned
@@ -113,7 +112,7 @@ extern "C"
 	unsigned long long do_rdtsc(void);
 
 
-#if (__cplusplus)
+#ifdef __cplusplus
 }
 #endif
 
