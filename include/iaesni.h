@@ -51,30 +51,6 @@ typedef unsigned char UCHAR;
 extern "C" {
 #endif
 
-#if defined(_MSC_VER)
-    #ifdef ROUND_KEYS_UNALIGNED_TESTING
-        #define DEFINE_ROUND_KEYS                              \
-            __declspec(align(16)) UCHAR _expandedKey[16 * 16]; \
-            UCHAR *expandedKey = _expandedKey + 4;
-    #else
-        #define DEFINE_ROUND_KEYS                              \
-            __declspec(align(16)) UCHAR _expandedKey[16 * 16]; \
-            UCHAR *expandedKey = _expandedKey;
-    #endif
-#elif defined(__GNUC__) || defined(__clang__) || (defined(__has_attribute) && __has_attribute(aligned))
-    #ifdef ROUND_KEYS_UNALIGNED_TESTING
-        #define DEFINE_ROUND_KEYS                                     \
-            UCHAR __attribute__((aligned(16))) _expandedKey[16 * 16]; \
-            UCHAR *expandedKey = _expandedKey + 4;
-    #else
-        #define DEFINE_ROUND_KEYS                                     \
-            UCHAR __attribute__((aligned(16))) _expandedKey[16 * 16]; \
-            UCHAR *expandedKey = _expandedKey;
-    #endif
-#else
-    #error "Can't find any align extension"
-#endif
-
 //test if the processor actually supports the above functions
 //executing one the functions below without processor support will cause UD fault
 //bool check_for_aes_instructions(void);
@@ -90,6 +66,7 @@ LIBAESNI_EXPORT void intel_AES_enc128(_AES_IN const UCHAR *plainText, _AES_OUT U
 LIBAESNI_EXPORT void intel_AES_enc192(_AES_IN const UCHAR *plainText, _AES_OUT UCHAR *cipherText, _AES_IN const UCHAR *key, _AES_IN size_t numBlocks);
 LIBAESNI_EXPORT void intel_AES_enc256(_AES_IN const UCHAR *plainText, _AES_OUT UCHAR *cipherText, _AES_IN const UCHAR *key, _AES_IN size_t numBlocks);
 
+LIBAESNI_EXPORT void intel_AES_enc256_IGE(const UCHAR *plainText,UCHAR *cipherText, const UCHAR *key, const UCHAR *iv, size_t numBlocks);
 
 LIBAESNI_EXPORT void intel_AES_enc128_CBC(const UCHAR *plainText, UCHAR *cipherText, const UCHAR *key, const UCHAR *iv, size_t numBlocks);
 LIBAESNI_EXPORT void intel_AES_enc192_CBC(const UCHAR *plainText, UCHAR *cipherText, const UCHAR *key, const UCHAR *iv, size_t numBlocks);
@@ -104,6 +81,8 @@ LIBAESNI_EXPORT void intel_AES_enc256_CBC(const UCHAR *plainText, UCHAR *cipherT
 LIBAESNI_EXPORT void intel_AES_dec128(_AES_IN const UCHAR *cipherText, _AES_OUT UCHAR *plainText, _AES_IN const UCHAR *key, _AES_IN size_t numBlocks);
 LIBAESNI_EXPORT void intel_AES_dec192(_AES_IN const UCHAR *cipherText, _AES_OUT UCHAR *plainText, _AES_IN const UCHAR *key, _AES_IN size_t numBlocks);
 LIBAESNI_EXPORT void intel_AES_dec256(_AES_IN const UCHAR *cipherText, _AES_OUT UCHAR *plainText, _AES_IN const UCHAR *key, _AES_IN size_t numBlocks);
+
+LIBAESNI_EXPORT void intel_AES_dec256_IGE(const UCHAR *cipherText,UCHAR *plainText, const UCHAR *key, const UCHAR *iv, size_t numBlocks);
 
 LIBAESNI_EXPORT void intel_AES_dec128_CBC(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, const UCHAR *iv, size_t numBlocks);
 LIBAESNI_EXPORT void intel_AES_dec192_CBC(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, const UCHAR *iv, size_t numBlocks);

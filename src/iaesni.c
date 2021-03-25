@@ -48,6 +48,32 @@
     #endif
 #endif
 
+
+#if defined(_MSC_VER)
+    #ifdef ROUND_KEYS_UNALIGNED_TESTING
+        #define DEFINE_ROUND_KEYS                              \
+            __declspec(align(16)) UCHAR _expandedKey[16 * 16]; \
+            UCHAR *expandedKey = _expandedKey + 4;
+    #else
+        #define DEFINE_ROUND_KEYS                              \
+            __declspec(align(16)) UCHAR _expandedKey[16 * 16]; \
+            UCHAR *expandedKey = _expandedKey;
+    #endif
+#elif defined(__GNUC__) || defined(__clang__) || (defined(__has_attribute) && __has_attribute(aligned))
+    #ifdef ROUND_KEYS_UNALIGNED_TESTING
+        #define DEFINE_ROUND_KEYS                                     \
+            UCHAR __attribute__((aligned(16))) _expandedKey[16 * 16]; \
+            UCHAR *expandedKey = _expandedKey + 4;
+    #else
+        #define DEFINE_ROUND_KEYS                                     \
+            UCHAR __attribute__((aligned(16))) _expandedKey[16 * 16]; \
+            UCHAR *expandedKey = _expandedKey;
+    #endif
+#else
+    #error "Can't find any align extension"
+#endif
+
+
 #define BLOCK_SIZE (16) //in bytes
 #define AES_128_KEYSIZE (16) //in bytes
 #define AES_192_KEYSIZE (24) //in bytes
@@ -301,6 +327,59 @@ void intel_AES_encdec128_CTR(const UCHAR *input, UCHAR *output, const UCHAR *key
 
 	iEncExpandKey128(key,expandedKey);
 	iEnc128_CTR(&aesData);
+}
+
+typedef unsigned long long i_aes_64;
+typedef i_aes_64 i_aes_128[2];
+
+static void intel_AES_encdec256_IGE_(const UCHAR *input,UCHAR *output, const UCHAR *key, const UCHAR *iv, size_t numBlocks, int encrypt) {
+    DEFINE_ROUND_KEYS
+    i_aes_64 *out = (i_aes_64 *) output;
+    const i_aes_64 *in = (const i_aes_64 *) input;
+    i_aes_128 iv1_block, iv2_block, iv2_block_tmp;
+    ExpandFunc expand_func = encrypt
+                                 ? iEncExpandKey256
+                                 : iDecExpandKey256;
+    CryptoFunc crypto_func = encrypt
+                                 ? iEnc256
+                                 : iDec256;
+    sAesData aesData;
+    expand_func(key, expandedKey);
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = 1;
+
+    memcpy(encrypt ? iv1_block : iv2_block, iv, sizeof(iv1_block));
+    memcpy(encrypt ? iv2_block : iv1_block, iv + sizeof(iv2_block), sizeof(iv2_block));
+
+    for (size_t i = 0; i < numBlocks; i++, in += 2, out += 2) {
+        i_aes_128 in_block, out_block;
+        memcpy(in_block, in, sizeof(in_block)); /* this copy is mandatory, `in` can be unaligned */
+        iv2_block_tmp[0] = in_block[0];
+        iv2_block_tmp[1] = in_block[1];
+
+        in_block[0] ^= iv1_block[0];
+        in_block[1] ^= iv1_block[1];
+
+        aesData.in_block = (const UCHAR *) in_block;
+        aesData.out_block = (UCHAR *) out_block;
+        crypto_func(&aesData);
+        out_block[0] ^= iv2_block[0];
+        out_block[1] ^= iv2_block[1];
+        memcpy(out, out_block, sizeof(out_block));
+
+        iv1_block[0] = out_block[0];
+        iv1_block[1] = out_block[1];
+        iv2_block[0] = iv2_block_tmp[0];
+        iv2_block[1] = iv2_block_tmp[1];
+    }
+}
+
+void intel_AES_enc256_IGE(const UCHAR *plainText, UCHAR *cipherText, const UCHAR *key, const UCHAR *iv, size_t numBlocks) {
+    intel_AES_encdec256_IGE_(plainText, cipherText, key, iv, numBlocks, 1);
+}
+
+void intel_AES_dec256_IGE(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, const UCHAR *iv, size_t numBlocks) {
+    intel_AES_encdec256_IGE_(cipherText, plainText, key, iv, numBlocks, 0);
 }
 
 

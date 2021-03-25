@@ -41,6 +41,10 @@ typedef struct sAesData_ {
 	_AES_IN		     size_t num_blocks;
 } sAesData;
 
+typedef void (*ExpandFunc)(const UCHAR *, UCHAR *);
+
+typedef void (*CryptoFunc)(sAesData *);
+
 #ifdef __cplusplus
 extern "C" {
 #endif
