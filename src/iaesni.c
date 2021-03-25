@@ -334,8 +334,8 @@ typedef i_aes_64 i_aes_128[2];
 
 static void intel_AES_encdec256_IGE_(const UCHAR *input,UCHAR *output, const UCHAR *key, const UCHAR *iv, size_t numBlocks, int encrypt) {
     DEFINE_ROUND_KEYS
-    i_aes_64 *out = (i_aes_64 *) output;
-    const i_aes_64 *in = (const i_aes_64 *) input;
+    const i_aes_128 *in = (const i_aes_128 *) input;
+    i_aes_128 *out = (i_aes_128 *) output;
     i_aes_128 iv1_block, iv2_block, iv2_block_tmp;
     ExpandFunc expand_func = encrypt
                                  ? iEncExpandKey256
@@ -351,7 +351,7 @@ static void intel_AES_encdec256_IGE_(const UCHAR *input,UCHAR *output, const UCH
     memcpy(encrypt ? iv1_block : iv2_block, iv, sizeof(iv1_block));
     memcpy(encrypt ? iv2_block : iv1_block, iv + sizeof(iv2_block), sizeof(iv2_block));
 
-    for (size_t i = 0; i < numBlocks; i++, in += 2, out += 2) {
+    for (size_t i = 0; i < numBlocks; i++, in++, out++) {
         i_aes_128 in_block, out_block;
         memcpy(in_block, in, sizeof(in_block)); /* this copy is mandatory, `in` can be unaligned */
         iv2_block_tmp[0] = in_block[0];
