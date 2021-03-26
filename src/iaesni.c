@@ -27,7 +27,7 @@
  * 
 */
 
-// 2016, Amirali Sanatinia (amirali@ccs.neu.edu)
+/* 2016, Amirali Sanatinia (amirali@ccs.neu.edu) */
 
 #include <string.h>
 #include <iaesni.h>
@@ -47,7 +47,6 @@
         #define _alloca alloca
     #endif
 #endif
-
 
 #if defined(_MSC_VER)
     #ifdef ROUND_KEYS_UNALIGNED_TESTING
@@ -73,17 +72,11 @@
     #error "Can't find any align extension"
 #endif
 
+#define AES_INSTRCTIONS_CPUID_BIT (1 << 25)
 
-#define BLOCK_SIZE (16) //in bytes
-#define AES_128_KEYSIZE (16) //in bytes
-#define AES_192_KEYSIZE (24) //in bytes
-#define AES_256_KEYSIZE (32) //in bytes
-
-#define AES_INSTRCTIONS_CPUID_BIT (1<<25)
-
-static void iaesni_cpuid(unsigned int res[4], int leaf){
+static void iaesni_cpuid(unsigned int res[4], int leaf) {
 #ifdef _WIN32
-    __cpuid((int *)res, leaf);
+    __cpuid((int *) res, leaf);
 #else
     __cpuid(leaf, res[0], res[1], res[2], res[3]);
 #endif
@@ -94,7 +87,7 @@ static void iaesni_cpuid(unsigned int res[4], int leaf){
  *   return 1 if cpu supports AES-NI, 0 otherwise
  */
 
-int check_for_aes_instructions(void) {/*eax|ebx|ecx|edx*/
+int check_for_aes_instructions(void) { /*eax|ebx|ecx|edx*/
     unsigned int cpuid_results[4] = {0, 0, 0, 0};
     /* leaf 0 returns vendor string */
     iaesni_cpuid(cpuid_results, 0);
@@ -107,9 +100,9 @@ int check_for_aes_instructions(void) {/*eax|ebx|ecx|edx*/
 
     /* swap 2 and 3 register values to make them appear as EBX EDX ECX */
     {
-        unsigned temp = cpuid_results[2];
+        unsigned tmp = cpuid_results[2];
         cpuid_results[2] = cpuid_results[3];
-        cpuid_results[3] = temp;
+        cpuid_results[3] = tmp;
     }
 
     if (cpuid_results[0] < 1) {
@@ -127,220 +120,210 @@ int check_for_aes_instructions(void) {/*eax|ebx|ecx|edx*/
         return 1;
     }
 
-	return 0;
+    return 0;
 }
 
-void intel_AES_enc128(const UCHAR *plainText,UCHAR *cipherText,const UCHAR *key,size_t numBlocks)
-{
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = plainText;
-	aesData.out_block = cipherText;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
+void intel_AES_enc128(const UCHAR *plainText, UCHAR *cipherText, const UCHAR *key, size_t numBlocks) {
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = plainText;
+    aesData.out_block = cipherText;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
 
-	iEncExpandKey128(key,expandedKey);
-	iEnc128(&aesData);
+    iEncExpandKey128(key, expandedKey);
+    iEnc128(&aesData);
 }
 
 void intel_AES_enc128_CBC(const UCHAR *plainText, UCHAR *cipherText, const UCHAR *key, const UCHAR *iv, size_t numBlocks) {
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = plainText;
-	aesData.out_block = cipherText;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
-	aesData.iv = iv;
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = plainText;
+    aesData.out_block = cipherText;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
+    aesData.iv = (UCHAR *) iv;
 
-	iEncExpandKey128(key,expandedKey);
-	iEnc128_CBC(&aesData);
+    iEncExpandKey128(key, expandedKey);
+    iEnc128_CBC(&aesData);
 }
 
+void intel_AES_enc192(const UCHAR *plainText, UCHAR *cipherText, const UCHAR *key, size_t numBlocks) {
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = plainText;
+    aesData.out_block = cipherText;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
 
-void intel_AES_enc192(const UCHAR *plainText,UCHAR *cipherText,const UCHAR *key,size_t numBlocks)
-{
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = plainText;
-	aesData.out_block = cipherText;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
-
-	iEncExpandKey192(key,expandedKey);
-	iEnc192(&aesData);
+    iEncExpandKey192(key, expandedKey);
+    iEnc192(&aesData);
 }
 
 void intel_AES_enc192_CBC(const UCHAR *plainText, UCHAR *cipherText, const UCHAR *key, const UCHAR *iv, size_t numBlocks) {
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = plainText;
-	aesData.out_block = cipherText;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
-	aesData.iv = iv;
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = plainText;
+    aesData.out_block = cipherText;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
+    aesData.iv = (UCHAR *) iv;
 
-	iEncExpandKey192(key,expandedKey);
-	iEnc192_CBC(&aesData);
+    iEncExpandKey192(key, expandedKey);
+    iEnc192_CBC(&aesData);
 }
 
+void intel_AES_enc256(const UCHAR *plainText, UCHAR *cipherText, const UCHAR *key, size_t numBlocks) {
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = plainText;
+    aesData.out_block = cipherText;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
 
-void intel_AES_enc256(const UCHAR *plainText,UCHAR *cipherText,const UCHAR *key,size_t numBlocks)
-{
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = plainText;
-	aesData.out_block = cipherText;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
-
-	iEncExpandKey256(key,expandedKey);
-	iEnc256(&aesData);
+    iEncExpandKey256(key, expandedKey);
+    iEnc256(&aesData);
 }
 
 void intel_AES_enc256_CBC(const UCHAR *plainText, UCHAR *cipherText, const UCHAR *key, const UCHAR *iv, size_t numBlocks) {
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = plainText;
-	aesData.out_block = cipherText;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
-	aesData.iv = iv;
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = plainText;
+    aesData.out_block = cipherText;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
+    aesData.iv = (UCHAR *) iv;
 
-	iEncExpandKey256(key,expandedKey);
-	iEnc256_CBC(&aesData);
+    iEncExpandKey256(key, expandedKey);
+    iEnc256_CBC(&aesData);
 }
 
-void intel_AES_dec128(const UCHAR *cipherText,UCHAR *plainText,const UCHAR *key,size_t numBlocks)
-{
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = cipherText;
-	aesData.out_block = plainText;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
+void intel_AES_dec128(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, size_t numBlocks) {
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = cipherText;
+    aesData.out_block = plainText;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
 
-	iDecExpandKey128(key,expandedKey);
-	iDec128(&aesData);
+    iDecExpandKey128(key, expandedKey);
+    iDec128(&aesData);
 }
 
-void intel_AES_dec128_CBC(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, const UCHAR *iv, size_t numBlocks) {
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = cipherText;
-	aesData.out_block = plainText;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
-	aesData.iv = iv;
+void intel_AES_dec128_CBC(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, UCHAR *iv, size_t numBlocks) {
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = cipherText;
+    aesData.out_block = plainText;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
+    aesData.iv = iv;
 
-	iDecExpandKey128(key,expandedKey);
-	iDec128_CBC(&aesData);
+    iDecExpandKey128(key, expandedKey);
+    iDec128_CBC(&aesData);
 }
 
+void intel_AES_dec192(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, size_t numBlocks) {
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = cipherText;
+    aesData.out_block = plainText;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
 
-void intel_AES_dec192(const UCHAR *cipherText,UCHAR *plainText,const UCHAR *key,size_t numBlocks)
-{
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = cipherText;
-	aesData.out_block = plainText;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
-
-	iDecExpandKey192(key,expandedKey);
-	iDec192(&aesData);
+    iDecExpandKey192(key, expandedKey);
+    iDec192(&aesData);
 }
 
-void intel_AES_dec192_CBC(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, const UCHAR *iv, size_t numBlocks) {
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = cipherText;
-	aesData.out_block = plainText;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
-	aesData.iv = iv;
+void intel_AES_dec192_CBC(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, UCHAR *iv, size_t numBlocks) {
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = cipherText;
+    aesData.out_block = plainText;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
+    aesData.iv = iv;
 
-	iDecExpandKey192(key,expandedKey);
-	iDec192_CBC(&aesData);
+    iDecExpandKey192(key, expandedKey);
+    iDec192_CBC(&aesData);
 }
 
+void intel_AES_dec256(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, size_t numBlocks) {
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = cipherText;
+    aesData.out_block = plainText;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
 
-void intel_AES_dec256(const UCHAR *cipherText,UCHAR *plainText, const UCHAR *key,size_t numBlocks)
-{
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = cipherText;
-	aesData.out_block = plainText;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
-
-	iDecExpandKey256(key,expandedKey);
-	iDec256(&aesData);
+    iDecExpandKey256(key, expandedKey);
+    iDec256(&aesData);
 }
 
-void intel_AES_dec256_CBC(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, const UCHAR *iv, size_t numBlocks) {
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = cipherText;
-	aesData.out_block = plainText;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
-	aesData.iv = iv;
+void intel_AES_dec256_CBC(const UCHAR *cipherText, UCHAR *plainText, const UCHAR *key, UCHAR *iv, size_t numBlocks) {
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = cipherText;
+    aesData.out_block = plainText;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
+    aesData.iv = iv;
 
-	iDecExpandKey256(key,expandedKey);
-	iDec256_CBC(&aesData);
+    iDecExpandKey256(key, expandedKey);
+    iDec256_CBC(&aesData);
 }
 
-void intel_AES_encdec256_CTR(const UCHAR *input, UCHAR *output, const UCHAR *key, const UCHAR *initial_counter, size_t numBlocks) {
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = input;
-	aesData.out_block = output;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
-	aesData.iv = initial_counter;
+void intel_AES_encdec256_CTR(const UCHAR *input, UCHAR *output, const UCHAR *key, UCHAR *ic, size_t numBlocks) {
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = input;
+    aesData.out_block = output;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
+    aesData.iv = ic;
 
-	iEncExpandKey256(key,expandedKey);
-	iEnc256_CTR(&aesData);
+    iEncExpandKey256(key, expandedKey);
+    iEnc256_CTR(&aesData);
 }
 
-void intel_AES_encdec192_CTR(const UCHAR *input, UCHAR *output, const UCHAR *key, const UCHAR *initial_counter, size_t numBlocks) {
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = input;
-	aesData.out_block = output;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
-	aesData.iv = initial_counter;
+void intel_AES_encdec192_CTR(const UCHAR *input, UCHAR *output, const UCHAR *key, UCHAR *ic, size_t numBlocks) {
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = input;
+    aesData.out_block = output;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
+    aesData.iv = ic;
 
-	iEncExpandKey192(key,expandedKey);
-	iEnc192_CTR(&aesData);
+    iEncExpandKey192(key, expandedKey);
+    iEnc192_CTR(&aesData);
 }
 
-void intel_AES_encdec128_CTR(const UCHAR *input, UCHAR *output, const UCHAR *key, const UCHAR *initial_counter, size_t numBlocks) {
-	DEFINE_ROUND_KEYS
-	sAesData aesData;
-	aesData.in_block = input;
-	aesData.out_block = output;
-	aesData.expanded_key = expandedKey;
-	aesData.num_blocks = numBlocks;
-	aesData.iv = initial_counter;
+void intel_AES_encdec128_CTR(const UCHAR *input, UCHAR *output, const UCHAR *key, UCHAR *ic, size_t numBlocks) {
+    DEFINE_ROUND_KEYS
+    sAesData aesData;
+    aesData.in_block = input;
+    aesData.out_block = output;
+    aesData.expanded_key = expandedKey;
+    aesData.num_blocks = numBlocks;
+    aesData.iv = ic;
 
-	iEncExpandKey128(key,expandedKey);
-	iEnc128_CTR(&aesData);
+    iEncExpandKey128(key, expandedKey);
+    iEnc128_CTR(&aesData);
 }
 
 typedef unsigned long long i_aes_64;
 typedef i_aes_64 i_aes_128[2];
 
-static void intel_AES_encdec256_IGE_(const UCHAR *input,UCHAR *output, const UCHAR *key, const UCHAR *iv, size_t numBlocks, int encrypt) {
+static void intel_AES_encdec256_IGE_(const UCHAR *input, UCHAR *output, const UCHAR *key, const UCHAR *iv, size_t numBlocks, int encrypt) {
     DEFINE_ROUND_KEYS
-    const i_aes_128 *in = (const i_aes_128 *) input;
-    i_aes_128 *out = (i_aes_128 *) output;
-    i_aes_128 iv1_block, iv2_block, iv2_block_tmp;
-    ExpandFunc expand_func = encrypt
+    const i_aes_128 *in  = (const i_aes_128 *) input;
+    i_aes_128       *out =       (i_aes_128 *) output;
+    i_aes_128 iv1_block, iv2_block;
+    ExpandFunc expand_func = (encrypt)
                                  ? iEncExpandKey256
                                  : iDecExpandKey256;
-    CryptoFunc crypto_func = encrypt
+    CryptoFunc crypto_func = (encrypt)
                                  ? iEnc256
                                  : iDec256;
     sAesData aesData;
@@ -348,11 +331,12 @@ static void intel_AES_encdec256_IGE_(const UCHAR *input,UCHAR *output, const UCH
     aesData.expanded_key = expandedKey;
     aesData.num_blocks = 1;
 
-    memcpy(encrypt ? iv1_block : iv2_block, iv, sizeof(iv1_block));
-    memcpy(encrypt ? iv2_block : iv1_block, iv + sizeof(iv2_block), sizeof(iv2_block));
+    memcpy((encrypt) ? iv1_block : iv2_block, iv, sizeof(iv1_block));
+    memcpy((encrypt) ? iv2_block : iv1_block, iv + sizeof(iv2_block), sizeof(iv2_block));
 
     for (size_t i = 0; i < numBlocks; i++, in++, out++) {
-        i_aes_128 in_block, out_block;
+        i_aes_128 in_block, out_block, iv2_block_tmp;
+
         memcpy(in_block, in, sizeof(in_block)); /* this copy is mandatory, `in` can be unaligned */
         iv2_block_tmp[0] = in_block[0];
         iv2_block_tmp[1] = in_block[1];
@@ -382,337 +366,286 @@ void intel_AES_dec256_IGE(const UCHAR *cipherText, UCHAR *plainText, const UCHAR
     intel_AES_encdec256_IGE_(cipherText, plainText, key, iv, numBlocks, 0);
 }
 
+int enc_128_CBC(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *iv, int numBlocks) {
+    unsigned int buffer_size = numBlocks * IAES_BLOCK_SIZE;
+    unsigned int i;
 
-int enc_128_CBC(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *iv, int numBlocks)
-{
-	unsigned int buffer_size =  numBlocks * BLOCK_SIZE;
-	unsigned int i;
+    UCHAR _key[IAES_128_KEYSIZE];
+    UCHAR _iv[IAES_BLOCK_SIZE];
+    UCHAR *plaintext = (UCHAR *) _alloca(buffer_size);
 
-	UCHAR _key[AES_128_KEYSIZE];
-	UCHAR _iv[BLOCK_SIZE];
-	UCHAR *plaintext = (UCHAR*)_alloca(buffer_size);
+    for (i = 0; i < IAES_BLOCK_SIZE; i++) {
+        _key[i] = key[i];
+        _iv[i] = iv[i];
+    }
 
-	for (i=0;i<BLOCK_SIZE;i++)
-	{
-		_key[i] = key[i];
-		_iv[i] = iv[i];
-	}
-
-	for (i=0;i<buffer_size;i++)
-	{
-		plaintext[i] = pt[i];
-	}
+    for (i = 0; i < buffer_size; i++) {
+        plaintext[i] = pt[i];
+    }
 
     intel_AES_enc128_CBC(plaintext, ct, _key, _iv, numBlocks);
-	return 0;
+    return 0;
 }
 
+int dec_128_CBC(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *iv, int numBlocks) {
 
-int dec_128_CBC(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *iv, int numBlocks){
-	
-	unsigned int buffer_size =  numBlocks * BLOCK_SIZE;
-	unsigned int i;
-	
-	UCHAR _key[AES_128_KEYSIZE];
-	UCHAR _iv[BLOCK_SIZE];
-	UCHAR *ciphertext = (UCHAR*)_alloca(buffer_size);
-	
-	for (i=0;i<BLOCK_SIZE;i++)
-	{
-		_key[i] = key[i];
-		_iv[i] = iv[i];
-	}
+    unsigned int buffer_size = numBlocks * IAES_BLOCK_SIZE;
+    unsigned int i;
 
-	for (i=0;i<buffer_size;i++)
-	{
-		ciphertext[i] = ct[i];
-	}
+    UCHAR _key[IAES_128_KEYSIZE];
+    UCHAR _iv[IAES_BLOCK_SIZE];
+    UCHAR *ciphertext = (UCHAR *) _alloca(buffer_size);
+
+    for (i = 0; i < IAES_BLOCK_SIZE; i++) {
+        _key[i] = key[i];
+        _iv[i] = iv[i];
+    }
+
+    for (i = 0; i < buffer_size; i++) {
+        ciphertext[i] = ct[i];
+    }
 
     intel_AES_dec128_CBC(ciphertext, pt, _key, _iv, numBlocks);
-	return 0;
+    return 0;
 }
 
+int enc_192_CBC(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *iv, int numBlocks) {
+    unsigned int buffer_size = numBlocks * IAES_BLOCK_SIZE;
+    unsigned int i;
 
-int enc_192_CBC(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *iv, int numBlocks)
-{
-	unsigned int buffer_size =  numBlocks * BLOCK_SIZE;
-	unsigned int i;
+    UCHAR _key[IAES_192_KEYSIZE];
+    UCHAR _iv[IAES_BLOCK_SIZE];
+    UCHAR *plaintext = (UCHAR *) _alloca(buffer_size);
 
-	UCHAR _key[AES_192_KEYSIZE];
-	UCHAR _iv[BLOCK_SIZE];
-	UCHAR *plaintext = (UCHAR*)_alloca(buffer_size);
+    for (i = 0; i < IAES_BLOCK_SIZE; i++) {
+        _iv[i] = iv[i];
+    }
 
-	for (i=0;i<BLOCK_SIZE;i++)
-	{
-		_iv[i] = iv[i];
-	}
-	
-	for (i=0;i<AES_192_KEYSIZE;i++)
-	{
-		_key[i] = key[i];
-	}
+    for (i = 0; i < IAES_192_KEYSIZE; i++) {
+        _key[i] = key[i];
+    }
 
-	for (i=0;i<buffer_size;i++)
-	{
-		plaintext[i] = pt[i];
-	}
+    for (i = 0; i < buffer_size; i++) {
+        plaintext[i] = pt[i];
+    }
 
     intel_AES_enc192_CBC(plaintext, ct, _key, _iv, numBlocks);
 
-	return 0;
-
+    return 0;
 }
 
-int dec_192_CBC(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *iv, int numBlocks){
+int dec_192_CBC(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *iv, int numBlocks) {
+    unsigned int buffer_size = numBlocks * IAES_BLOCK_SIZE;
+    unsigned int i;
 
-	unsigned int buffer_size =  numBlocks * BLOCK_SIZE;
-	unsigned int i;
+    UCHAR _key[IAES_192_KEYSIZE];
+    UCHAR _iv[IAES_BLOCK_SIZE];
+    UCHAR *ciphertext = (UCHAR *) _alloca(buffer_size);
 
-	UCHAR _key[AES_192_KEYSIZE];
-	UCHAR _iv[BLOCK_SIZE];
-	UCHAR *ciphertext = (UCHAR*)_alloca(buffer_size);
+    for (i = 0; i < IAES_BLOCK_SIZE; i++) {
+        _iv[i] = iv[i];
+    }
 
-	for (i=0;i<BLOCK_SIZE;i++)
-	{
-		_iv[i] = iv[i];
-	}
+    for (i = 0; i < IAES_192_KEYSIZE; i++) {
+        _key[i] = key[i];
+    }
 
-	for (i=0;i<AES_192_KEYSIZE;i++)
-	{
-		_key[i] = key[i];
-	}
-
-	for (i=0;i<buffer_size;i++)
-	{
-		ciphertext[i] = ct[i];
-	}
+    for (i = 0; i < buffer_size; i++) {
+        ciphertext[i] = ct[i];
+    }
 
     intel_AES_dec192_CBC(ciphertext, pt, _key, _iv, numBlocks);
-	return 0;
+    return 0;
 }
 
+int enc_256_CBC(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *iv, int numBlocks) {
+    unsigned int buffer_size = numBlocks * IAES_BLOCK_SIZE;
+    unsigned int i;
 
-int enc_256_CBC(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *iv, int numBlocks)
-{
-	unsigned int buffer_size =  numBlocks * BLOCK_SIZE;
-	unsigned int i;
+    UCHAR _key[IAES_256_KEYSIZE];
+    UCHAR _iv[IAES_BLOCK_SIZE];
+    UCHAR *plaintext = (UCHAR *) _alloca(buffer_size);
 
-	UCHAR _key[AES_256_KEYSIZE];
-	UCHAR _iv[BLOCK_SIZE];
-	UCHAR *plaintext = (UCHAR*)_alloca(buffer_size);
+    for (i = 0; i < IAES_BLOCK_SIZE; i++) {
+        _iv[i] = iv[i];
+    }
 
-	for (i=0;i<BLOCK_SIZE;i++)
-	{
-		_iv[i] = iv[i];
-	}
-	
-	for (i=0;i<AES_256_KEYSIZE;i++)
-	{
-		_key[i] = key[i];
-	}
+    for (i = 0; i < IAES_256_KEYSIZE; i++) {
+        _key[i] = key[i];
+    }
 
-	for (i=0;i<buffer_size;i++)
-	{
-		plaintext[i] = pt[i];
-	}
+    for (i = 0; i < buffer_size; i++) {
+        plaintext[i] = pt[i];
+    }
 
     intel_AES_enc256_CBC(plaintext, ct, _key, _iv, numBlocks);
-	return 0;
+    return 0;
 }
 
+int dec_256_CBC(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *iv, int numBlocks) {
+    unsigned int buffer_size = numBlocks * IAES_BLOCK_SIZE;
+    unsigned int i;
 
-int dec_256_CBC(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *iv, int numBlocks){
-	
-	unsigned int buffer_size =  numBlocks * BLOCK_SIZE;
-	unsigned int i;
-	
-	UCHAR _key[AES_256_KEYSIZE];
-	UCHAR _iv[BLOCK_SIZE];
-	UCHAR *ciphertext = (UCHAR*)_alloca(buffer_size);
-	
-	for (i=0;i<BLOCK_SIZE;i++)
-	{
-		_iv[i] = iv[i];
-	}
+    UCHAR _key[IAES_256_KEYSIZE];
+    UCHAR _iv[IAES_BLOCK_SIZE];
+    UCHAR *ciphertext = (UCHAR *) _alloca(buffer_size);
 
-	for (i=0;i<AES_256_KEYSIZE;i++)
-	{
-		_key[i] = key[i];
-	}
+    for (i = 0; i < IAES_BLOCK_SIZE; i++) {
+        _iv[i] = iv[i];
+    }
 
-	for (i=0;i<buffer_size;i++)
-	{
-		ciphertext[i] = ct[i];
-	}
+    for (i = 0; i < IAES_256_KEYSIZE; i++) {
+        _key[i] = key[i];
+    }
+
+    for (i = 0; i < buffer_size; i++) {
+        ciphertext[i] = ct[i];
+    }
 
     intel_AES_dec256_CBC(ciphertext, pt, _key, _iv, numBlocks);
-	return 0;
+    return 0;
 }
 
-int enc_128_CTR(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *ic, int numBlocks)
-{
-	unsigned int buffer_size = numBlocks*BLOCK_SIZE;
-	unsigned int i;
+int enc_128_CTR(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *ic, int numBlocks) {
+    unsigned int buffer_size = numBlocks * IAES_BLOCK_SIZE;
+    unsigned int i;
 
-	UCHAR _key[AES_128_KEYSIZE];
-	UCHAR _ic[BLOCK_SIZE];
-	UCHAR *plaintext = (UCHAR*)_alloca(buffer_size);
+    UCHAR _key[IAES_128_KEYSIZE];
+    UCHAR _ic[IAES_BLOCK_SIZE];
+    UCHAR *plaintext = (UCHAR *) _alloca(buffer_size);
 
-	for (i=0;i<BLOCK_SIZE;i++)
-	{
-		_key[i] = key[i];
-		_ic[i] = ic[i];
-	}
-	for (i=0;i<buffer_size;i++)
-	{
-		plaintext[i] = pt[i];
-	}
+    for (i = 0; i < IAES_BLOCK_SIZE; i++) {
+        _key[i] = key[i];
+        _ic[i] = ic[i];
+    }
+    for (i = 0; i < buffer_size; i++) {
+        plaintext[i] = pt[i];
+    }
 
     intel_AES_encdec128_CTR(plaintext, ct, _key, _ic, numBlocks);
-	
-	return 0;
+
+    return 0;
 }
 
+int dec_128_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *ic, int numBlocks) {
+    unsigned int buffer_size = numBlocks * IAES_BLOCK_SIZE;
+    unsigned int i;
 
-int dec_128_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *ic, int numBlocks)
-{
-	unsigned int buffer_size = numBlocks*BLOCK_SIZE;
-	unsigned int i;
+    UCHAR _key[IAES_128_KEYSIZE];
+    UCHAR _ic[IAES_BLOCK_SIZE];
+    UCHAR *ciphertext = (UCHAR *) _alloca(buffer_size);
 
-	UCHAR _key[AES_128_KEYSIZE];
-	UCHAR _ic[BLOCK_SIZE];
-	UCHAR *ciphertext = (UCHAR*)_alloca(buffer_size);
+    for (i = 0; i < IAES_BLOCK_SIZE; i++) {
+        _key[i] = key[i];
+        _ic[i] = ic[i];
+    }
 
-	for (i=0;i<BLOCK_SIZE;i++)
-	{
-		_key[i] = key[i];
-		_ic[i] = ic[i];
-	}
-
-	for (i=0;i<buffer_size;i++)
-	{
-		ciphertext[i] = ct[i];
-	}
+    for (i = 0; i < buffer_size; i++) {
+        ciphertext[i] = ct[i];
+    }
 
     intel_AES_encdec128_CTR(ciphertext, pt, _key, _ic, numBlocks);
 
-	return 0;
+    return 0;
 }
 
-int enc_192_CTR(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *ic, int numBlocks)
-{
-	unsigned int buffer_size = numBlocks*BLOCK_SIZE;
-	unsigned int i;
+int enc_192_CTR(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *ic, int numBlocks) {
+    unsigned int buffer_size = numBlocks * IAES_BLOCK_SIZE;
+    unsigned int i;
 
-	UCHAR _key[AES_192_KEYSIZE];
-	UCHAR _ic[BLOCK_SIZE];
-	UCHAR *plaintext = (UCHAR*)_alloca(buffer_size);
+    UCHAR _key[IAES_192_KEYSIZE];
+    UCHAR _ic[IAES_BLOCK_SIZE];
+    UCHAR *plaintext = (UCHAR *) _alloca(buffer_size);
 
-	for (i=0;i<BLOCK_SIZE;i++)
-	{
-		_ic[i] = ic[i];
-	}
+    for (i = 0; i < IAES_BLOCK_SIZE; i++) {
+        _ic[i] = ic[i];
+    }
 
-	for (i=0;i<AES_192_KEYSIZE;i++)
-	{
-		_key[i] = key[i];
-	}
+    for (i = 0; i < IAES_192_KEYSIZE; i++) {
+        _key[i] = key[i];
+    }
 
-	for (i=0;i<buffer_size;i++)
-	{
-		plaintext[i] = pt[i];
-	}
+    for (i = 0; i < buffer_size; i++) {
+        plaintext[i] = pt[i];
+    }
 
     intel_AES_encdec192_CTR(plaintext, ct, _key, _ic, numBlocks);
 
-	return 0;
+    return 0;
 }
 
-int dec_192_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *ic, int numBlocks)
-{
-	unsigned int buffer_size = numBlocks*BLOCK_SIZE;
-	unsigned int i;
+int dec_192_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *ic, int numBlocks) {
+    unsigned int buffer_size = numBlocks * IAES_BLOCK_SIZE;
+    unsigned int i;
 
-	UCHAR _key[AES_192_KEYSIZE];
-	UCHAR _ic[BLOCK_SIZE];
-	UCHAR *ciphertext = (UCHAR*)_alloca(buffer_size);
+    UCHAR _key[IAES_192_KEYSIZE];
+    UCHAR _ic[IAES_BLOCK_SIZE];
+    UCHAR *ciphertext = (UCHAR *) _alloca(buffer_size);
 
-	for (i=0;i<BLOCK_SIZE;i++)
-	{
-		_key[i] = key[i];
-		_ic[i] = ic[i];
-	}
+    for (i = 0; i < IAES_BLOCK_SIZE; i++) {
+        _key[i] = key[i];
+        _ic[i] = ic[i];
+    }
 
-	for (i=0;i<AES_192_KEYSIZE;i++)
-	{
-		_key[i] = key[i];
-	}
+    for (i = 0; i < IAES_192_KEYSIZE; i++) {
+        _key[i] = key[i];
+    }
 
-	for (i=0;i<buffer_size;i++)
-	{
-		ciphertext[i] = ct[i];
-	}
+    for (i = 0; i < buffer_size; i++) {
+        ciphertext[i] = ct[i];
+    }
 
     intel_AES_encdec192_CTR(ciphertext, pt, _key, _ic, numBlocks);
 
-	return 0;
+    return 0;
 }
 
+int enc_256_CTR(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *ic, int numBlocks) {
+    unsigned int buffer_size = numBlocks * IAES_BLOCK_SIZE;
+    unsigned int i;
 
-int enc_256_CTR(const UCHAR *pt, UCHAR *ct, const UCHAR *key, const UCHAR *ic, int numBlocks)
-{
-	unsigned int buffer_size = numBlocks*BLOCK_SIZE;
-	unsigned int i;
+    UCHAR _key[IAES_256_KEYSIZE];
+    UCHAR _ic[IAES_BLOCK_SIZE];
+    UCHAR *plaintext = (UCHAR *) _alloca(buffer_size);
 
-	UCHAR _key[AES_256_KEYSIZE];
-	UCHAR _ic[BLOCK_SIZE];
-	UCHAR *plaintext = (UCHAR*)_alloca(buffer_size);
+    for (i = 0; i < IAES_BLOCK_SIZE; i++) {
+        _ic[i] = ic[i];
+    }
 
-	for (i=0;i<BLOCK_SIZE;i++)
-	{
-		_ic[i] = ic[i];
-	}
+    for (i = 0; i < IAES_256_KEYSIZE; i++) {
+        _key[i] = key[i];
+    }
 
-	for (i=0;i<AES_256_KEYSIZE;i++)
-	{
-		_key[i] = key[i];
-	}
-
-	for (i=0;i<buffer_size;i++)
-	{
-		plaintext[i] = pt[i];
-	}
+    for (i = 0; i < buffer_size; i++) {
+        plaintext[i] = pt[i];
+    }
 
     intel_AES_encdec256_CTR(plaintext, ct, _key, _ic, numBlocks);
 
-	return 0;
+    return 0;
 }
 
-int dec_256_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *ic, int numBlocks)
-{
-	unsigned int buffer_size = numBlocks*BLOCK_SIZE;
-	unsigned int i;
+int dec_256_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *ic, int numBlocks) {
+    unsigned int buffer_size = numBlocks * IAES_BLOCK_SIZE;
+    unsigned int i;
 
-	UCHAR _key[AES_256_KEYSIZE];
-	UCHAR _ic[BLOCK_SIZE];
-	UCHAR *ciphertext = (UCHAR*)_alloca(buffer_size);
+    UCHAR _key[IAES_256_KEYSIZE];
+    UCHAR _ic[IAES_BLOCK_SIZE];
+    UCHAR *ciphertext = (UCHAR *) _alloca(buffer_size);
 
-	for (i=0;i<BLOCK_SIZE;i++)
-	{
-		_ic[i] = ic[i];
-	}
+    for (i = 0; i < IAES_BLOCK_SIZE; i++) {
+        _ic[i] = ic[i];
+    }
 
-	for (i=0;i<AES_256_KEYSIZE;i++)
-	{
-		_key[i] = key[i];
-	}
+    for (i = 0; i < IAES_256_KEYSIZE; i++) {
+        _key[i] = key[i];
+    }
 
-	for (i=0;i<buffer_size;i++)
-	{
-		ciphertext[i] = ct[i];
-	}
+    for (i = 0; i < buffer_size; i++) {
+        ciphertext[i] = ct[i];
+    }
 
     intel_AES_encdec256_CTR(ciphertext, pt, _key, _ic, numBlocks);
 
-	return 0;
+    return 0;
 }
