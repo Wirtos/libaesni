@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14.7 FATAL_ERROR)
 list(APPEND CMAKE_ASM_NASM_SOURCE_FILE_EXTENSIONS s)
 project(libaesni LANGUAGES C ASM_NASM)
 
