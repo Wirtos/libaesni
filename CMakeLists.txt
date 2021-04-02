@@ -14,11 +14,15 @@ if (NOT "${CMAKE_ASM_NASM_COMPILER_ID}" MATCHES "YASM")
     message(FATAL_ERROR "-DCMAKE_ASM_NASM_ASM variable must point to a yasm assembler, currently points to: ${CMAKE_ASM_NASM_COMPILER_ID}")
 endif ()
 
-if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
-    message(FATAL_ERROR "Only 64 bit targets are supported")
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+    add_library(${PROJECT_NAME}_asm OBJECT asm/x64/iaesx64.s asm/x64/do_rdtsc.s)
+elseif (CMAKE_SIZEOF_VOID_P EQUAL 4)
+    add_library(${PROJECT_NAME}_asm OBJECT asm/x86/iaesx86.s asm/x86/do_rdtsc.s)
+else ()
+    message(FATAL_ERROR "Only x86 and x64 targets are currently supported")
 endif ()
 
-add_library(${PROJECT_NAME}_asm OBJECT asm/iaesx64.s asm/do_rdtsc.s)
+
 if (UNIX)
     target_compile_options(${PROJECT_NAME}_asm PRIVATE -D__linux__)
 endif ()

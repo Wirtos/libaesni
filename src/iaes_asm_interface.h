@@ -56,7 +56,7 @@ extern "C" {
 #endif
 
 /* on apple it expects symbols to already have underscores */
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !(defined(_WIN32) && !defined(_WIN64))
     #define iEncExpandKey256 _iEncExpandKey256
     #define iEncExpandKey192 _iEncExpandKey192
     #define iEncExpandKey128 _iEncExpandKey128
