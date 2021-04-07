@@ -649,3 +649,7 @@ int dec_256_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR *key, const UCHAR *ic, i
 
     return 0;
 }
+
+unsigned long long intel_AES_rdtsc(void) {
+    return do_rdtsc();
+}

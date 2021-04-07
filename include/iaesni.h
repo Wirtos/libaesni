@@ -108,6 +108,8 @@ LIBAESNI_EXPORT int dec_192_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR key[IAES
 LIBAESNI_EXPORT int enc_256_CTR(const UCHAR *pt, UCHAR *ct, const UCHAR key[IAES_256_KEYSIZE], const UCHAR ic[IAES_BLOCK_SIZE], int numBlocks);
 LIBAESNI_EXPORT int dec_256_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR key[IAES_256_KEYSIZE], const UCHAR ic[IAES_BLOCK_SIZE], int numBlocks);
 
+LIBAESNI_EXPORT unsigned long long intel_AES_rdtsc(void);
+
 #ifdef __cplusplus
 }
 #endif
