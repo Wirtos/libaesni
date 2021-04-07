@@ -94,20 +94,6 @@ LIBAESNI_EXPORT void intel_AES_encdec128_CTR(const UCHAR *input, UCHAR *output, 
 LIBAESNI_EXPORT void intel_AES_encdec192_CTR(const UCHAR *input, UCHAR *output, const UCHAR key[IAES_192_KEYSIZE], IAES_INOUT UCHAR ic[IAES_BLOCK_SIZE], size_t numBlocks);
 LIBAESNI_EXPORT void intel_AES_encdec256_CTR(const UCHAR *input, UCHAR *output, const UCHAR key[IAES_256_KEYSIZE], IAES_INOUT UCHAR ic[IAES_BLOCK_SIZE], size_t numBlocks);
 
-/* Encryption/Decryption Functions */
-LIBAESNI_EXPORT int enc_128_CBC(const UCHAR *pt, UCHAR *ct, const UCHAR key[IAES_128_KEYSIZE], const UCHAR iv[IAES_BLOCK_SIZE], int numBlocks);
-LIBAESNI_EXPORT int dec_128_CBC(const UCHAR *ct, UCHAR *pt, const UCHAR key[IAES_128_KEYSIZE], const UCHAR iv[IAES_BLOCK_SIZE], int numBlocks);
-LIBAESNI_EXPORT int enc_192_CBC(const UCHAR *pt, UCHAR *ct, const UCHAR key[IAES_192_KEYSIZE], const UCHAR iv[IAES_BLOCK_SIZE], int numBlocks);
-LIBAESNI_EXPORT int dec_192_CBC(const UCHAR *ct, UCHAR *pt, const UCHAR key[IAES_192_KEYSIZE], const UCHAR iv[IAES_BLOCK_SIZE], int numBlocks);
-LIBAESNI_EXPORT int enc_256_CBC(const UCHAR *pt, UCHAR *ct, const UCHAR key[IAES_256_KEYSIZE], const UCHAR iv[IAES_BLOCK_SIZE], int numBlocks);
-LIBAESNI_EXPORT int dec_256_CBC(const UCHAR *ct, UCHAR *pt, const UCHAR key[IAES_256_KEYSIZE], const UCHAR iv[IAES_BLOCK_SIZE], int numBlocks);
-LIBAESNI_EXPORT int enc_128_CTR(const UCHAR *pt, UCHAR *ct, const UCHAR key[IAES_128_KEYSIZE], const UCHAR ic[IAES_BLOCK_SIZE], int numBlocks);
-LIBAESNI_EXPORT int dec_128_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR key[IAES_128_KEYSIZE], const UCHAR ic[IAES_BLOCK_SIZE], int numBlocks);
-LIBAESNI_EXPORT int enc_192_CTR(const UCHAR *pt, UCHAR *ct, const UCHAR key[IAES_192_KEYSIZE], const UCHAR ic[IAES_BLOCK_SIZE], int numBlocks);
-LIBAESNI_EXPORT int dec_192_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR key[IAES_192_KEYSIZE], const UCHAR ic[IAES_BLOCK_SIZE], int numBlocks);
-LIBAESNI_EXPORT int enc_256_CTR(const UCHAR *pt, UCHAR *ct, const UCHAR key[IAES_256_KEYSIZE], const UCHAR ic[IAES_BLOCK_SIZE], int numBlocks);
-LIBAESNI_EXPORT int dec_256_CTR(const UCHAR *ct, UCHAR *pt, const UCHAR key[IAES_256_KEYSIZE], const UCHAR ic[IAES_BLOCK_SIZE], int numBlocks);
-
 LIBAESNI_EXPORT unsigned long long intel_AES_rdtsc(void);
 
 #ifdef __cplusplus
